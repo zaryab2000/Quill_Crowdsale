@@ -48,7 +48,7 @@ import "./SafeMath.sol";
      // Balances for each account
      mapping(address => uint256) public balances;
 
-     // Owner of account approves the transfer of an amount to another account
+     // Owner of account apERC20Interfaceproves the transfer of an amount to another account
      mapping(address => mapping (address => uint256)) allowed;
 
      // Functions with this modifier can only be executed by the owner
@@ -76,6 +76,7 @@ import "./SafeMath.sol";
       function balanceOf(address _owner) public returns (uint256 balance) {
          return balances[_owner];
       }
+
 
       // Transfer the balance from owner's account to another account
       function transfer(address _to, uint256 _amount) public returns (bool success) {
