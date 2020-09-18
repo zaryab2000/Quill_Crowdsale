@@ -6,7 +6,6 @@ contract QuillCrowdsale is Crowdsale{
     using SafeMath for uint256;
     
     uint256 public totalUIDs;
-    address public tokenAddress;
     IERC20 public QuillTtoken;
     uint256 public exchangeRate = 1000; // 1 dollar = 1000 tokens
     
@@ -22,8 +21,7 @@ contract QuillCrowdsale is Crowdsale{
         Crowdsale(rate, wallet, ERCtoken)
     {
         QuillTtoken = ERCtoken;
-        tokenAddress = address(ERCtoken);
-         timeToInterest_Staked[3] = 20;
+        timeToInterest_Staked[3] = 20;
         timeToInterest_Staked[1] = 16;
         timeToInterest_NonStaked[3] = 16;
         timeToInterest_NonStaked[1] = 12;
