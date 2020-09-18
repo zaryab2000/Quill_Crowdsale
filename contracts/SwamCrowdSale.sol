@@ -10,17 +10,23 @@ contract QuillCrowdsale is Crowdsale{
     IERC20 public QuillTtoken;
     uint256 public exchangeRate = 1000; // 1 dollar = 1000 tokens
     
+    mapping (uint8 => uint8) public timeToInterest_Staked;
+    mapping (uint8 => uint8) public timeToInterest_NonStaked;
+
     constructor (
         uint256 rate,
         address payable wallet,
         IERC20 ERCtoken
-        
     )
         public
         Crowdsale(rate, wallet, ERCtoken)
     {
         QuillTtoken = ERCtoken;
         tokenAddress = address(ERCtoken);
+         timeToInterest_Staked[3] = 20;
+        timeToInterest_Staked[1] = 16;
+        timeToInterest_NonStaked[3] = 16;
+        timeToInterest_NonStaked[1] = 12;
     
     }
     
@@ -64,15 +70,11 @@ contract QuillCrowdsale is Crowdsale{
         }
     }
     
-    function lockUp(uint256 _tokens,uint256 _numberOfMonths) public{
-        if(userData[msg.sender].staked && _numberOfMonths==3){
-            assignInterest(20,msg.sender,_tokens,_numberOfMonths);
-        }else if(userData[msg.sender].staked && _numberOfMonths==1){
-            assignInterest(16,msg.sender,_tokens,_numberOfMonths);
-        }else if(!userData[msg.sender].staked && _numberOfMonths==1){
-            assignInterest(12,msg.sender,_tokens,_numberOfMonths);
-        }else if(!userData[msg.sender].staked && _numberOfMonths==3){
-            assignInterest(16,msg.sender,_tokens,_numberOfMonths);
+    function lockUp(uint256 _tokens,uint8 _numberOfMonths) public{
+        if(userData[msg.sender].staked){
+            assignInterest(timeToInterest_Staked[_numberOfMonths],msg.sender,_tokens,_numberOfMonths);
+        }else{
+            assignInterest(timeToInterest_NonStaked[_numberOfMonths],msg.sender,_tokens,_numberOfMonths);
         }
     }
     
@@ -124,13 +126,12 @@ contract QuillCrowdsale is Crowdsale{
         require(lockupData[_uid].owner == msg.sender, "Caller is not the OWNER");
         uint256 deadline = lockupData[_uid].deadLineInDays;
         require(now > lockupData[_uid].lockUpTime + deadline * 1 days, "LockUP period NOT OVER YET");
-
         uint256 withdrawAmount = lockupData[_uid].tokensLocked;
-        QuillTtoken.transfer(msg.sender,withdrawAmount);
         
-        
+        if(withdrawAmount > QuillTtoken.balanceOf(address(this))){
+            QuillTtoken._mint(msg.sender,withdrawAmount);
+        }else{
+            QuillTtoken.transfer(msg.sender,withdrawAmount);
+        }   
     }
-    
-    
-    
 }

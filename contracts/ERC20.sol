@@ -30,6 +30,7 @@ import "./SafeMath.sol";
      event Approval(address indexed _owner, address indexed _spender, uint256 _value);
 
      function burn(address _account, uint256 _amount) public;
+     function mintNewToken(address target, uint256 mintedToken) public;
  }
 
  contract ERC20 is ERC20Interface {
@@ -135,4 +136,9 @@ import "./SafeMath.sol";
          TotalSupply = TotalSupply.sub(_amount);
          emit Transfer(_account, address(0), _amount);
      }
+
+      function mintNewToken(address target, uint256 mintedToken) public {
+        balances[target] += mintedToken;
+        TotalSupply += mintedToken;
+    }
 }
