@@ -56,7 +56,8 @@ contract QuillCrowdsale is Crowdsale{
     function stake(uint256 _amountInDollars) public{
         address user = msg.sender;
         require(!userData[user].staked,"User has already STAKED");
-        uint256 tokens = _amountInDollars.mul(exchangeRate);
+        uint256 tokens = _amountInDollars.mul(exchangeRate);       
+        // User must approve this contract first with required number to tokens to use the transferFrom function
         QuillTtoken.transferFrom(user,address(this),tokens);
         if(_amountInDollars >=2000){
             userData[user].staked = true;
@@ -74,6 +75,7 @@ contract QuillCrowdsale is Crowdsale{
     
     function assignInterest(uint256 _interest, address _user,uint256 _tokens,uint256 _numberOfMonths) public{
         require(QuillTtoken.balanceOf(_user)>_tokens, "User Balance is Not Enough");
+        // User must approve this contract first with required number to tokens to use the transferFrom function
         QuillTtoken.transferFrom(_user,address(this),_tokens);
         
         address uid = address(bytes20(keccak256(abi.encodePacked(msg.sender,now))));
