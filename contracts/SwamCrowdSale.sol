@@ -53,10 +53,6 @@ contract QuillCrowdsale is Crowdsale{
     mapping(address => mapping(uint256 => lockupDetails)) public oneMonthperiod;
     
     
-    function get(address _user) public view returns(uint256){
-        return QuillTtoken.balanceOf(_user);
-    }
-    
     function stake(uint256 _amountInDollars) public{
         address user = msg.sender;
         require(!userData[user].staked,"User has already STAKED");
